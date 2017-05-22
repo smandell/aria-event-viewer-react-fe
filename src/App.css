@@ -1,0 +1,70 @@
+#header{
+  display: flex;
+  margin-bottom: 10px;
+  box-shadow: 0px 5px 5px 0px #006600;
+}
+
+#page-title{
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#client-select{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+#selected-client-number {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+#instructions-section {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.event-box {
+  border-color: black;
+  border-width: 2px;
+  border-style: solid;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.type-icon {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.timestamp {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size: 80%;    
+}
+
+.event-title-list {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.event-summary .master-plan-list {
+  list-style-type: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+span[class~=label] {
+  margin: 2px;
+  font-size: 12px;
+}
