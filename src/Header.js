@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-var Header = (props) => {
+var Header = props => {
   return (
     <div className="col-sm-12" id="header">
       <div className="col-sm-4" id="page-title">
@@ -26,9 +26,9 @@ class ClientSelection extends Component {
     this.resetClientNumber = this.resetClientNumber.bind(this);
     this.selectClientNumber = this.selectClientNumber.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { 
+    this.state = {
       isClientSelect: false,
-      value: '' 
+      value: ""
     };
   }
 
@@ -55,8 +55,8 @@ class ClientSelection extends Component {
     this.props.resetClientNumber();
 
     this.setState({
-      value: ''
-    })
+      value: ""
+    });
   }
 
   render() {
