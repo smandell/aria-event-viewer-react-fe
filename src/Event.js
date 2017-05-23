@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
-var Event = ({events}) => {
+var Event = (props) => {
   return (
     <div>
-      {events.map(event => {
+      {props.events.map(event => {
         return (
           <div key={event.id} className="col-sm-12 event-box">
             <div className="col-sm-1">
@@ -16,7 +16,9 @@ var Event = ({events}) => {
               <EventSummary data={event.data} />
             </div>
             <div className="col-sm-2">
-              {<EventPayload payload={event.payload} />}
+              <EventPayload 
+                rawPayloadData={event.rawPayloadData} 
+                displayRawPayload={props.displayRawPayload} />
             </div>
           </div>
         );
@@ -31,20 +33,6 @@ var EventTime = (props) => {
       <div>
         <p className="text-center">{props.datetime} </p>
       </div>
-    </div>
-  );
-}
-
-var EventType = (props) => {
-  const eventTypeData = determineEventType(props.type);
-
-  return (
-    <div
-      className={eventTypeData.class}
-      data-toggle="tooltip"
-      title={eventTypeData.title}
-    >
-      <i className="material-icons">{eventTypeData.icon}</i>
     </div>
   );
 }
@@ -88,6 +76,19 @@ var determineEventType = (eventType) => {
   return eventTypeData;
 }
 
+var EventType = (props) => {
+  const eventTypeData = determineEventType(props.type);
+
+  return (
+    <div
+      className={eventTypeData.class}
+      data-toggle="tooltip"
+      title={eventTypeData.title}
+    >
+      <i className="material-icons">{eventTypeData.icon}</i>
+    </div>
+  );
+}
 
 var EventSummary = (props) => {
   let eventSummaryElement = null;
@@ -145,9 +146,21 @@ var InstanceEventSummary = (props) => {
   );
 }
 
+//displays the 'View Payload' button and contents 
 class EventPayload extends Component {
+  constructor(props) {
+    super(props);
+    this.displayRawPayload = this.displayRawPayload.bind(this);
+  }
+
+  displayRawPayload(event){
+    this.props.displayRawPayload(this.props.rawPayloadData);
+  }
+
   render() {
-    return null;
+    return(
+    <button className="btn btn-primary" type="button" onClick={this.displayRawPayload}>View Payload</button>
+    );
   }
 }
 
