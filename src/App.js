@@ -70,7 +70,7 @@ class App extends Component {
               }          
             ]
           },
-          rawPayloadData: "hello"
+          rawPayloadData: "goodbye"
         }    
       ],
       modal: {

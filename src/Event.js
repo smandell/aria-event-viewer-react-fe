@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Button from 'react-bootstrap/lib/Button';
+import Label from 'react-bootstrap/lib/Label';
 
 var Event = (props) => {
   return (
@@ -131,14 +133,12 @@ var InstanceEventSummary = (props) => {
   return (
     <div className="event-summary">
       <div className="col-sm-2">
-        <span className="label label-danger">Acct: {props.data.acct_no}</span>
+        <Label bsStyle="danger">Acct: {props.data.acct_no}</Label>
       </div>
       <div className="col-sm-10">
         {props.data.plandata.map(plan => {
           return (
-            <span className="label label-primary label-data">
-              Master Plan: {plan.plan_instance_title}
-            </span>
+            <Label bsStyle="primary">Master Plan: {plan.plan_instance_title}</Label>
           );
         })}
       </div>
@@ -159,7 +159,7 @@ class EventPayload extends Component {
 
   render() {
     return(
-    <button className="btn btn-primary" type="button" onClick={this.displayRawPayload}>View Payload</button>
+      <Button bsStyle="info" onClick={this.displayRawPayload}>View Payload</Button>
     );
   }
 }

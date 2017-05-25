@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Button from 'react-bootstrap/lib/Button';
+import Label from 'react-bootstrap/lib/Label';
 
 var Header = props => {
   return (
@@ -14,7 +16,7 @@ var Header = props => {
         />
       </div>
       <div className="col-sm-4" id="instructions-section">
-        <button type="button" className="btn btn-info">Instructions</button>
+        <Button bsStyle="info">Instructions</Button>
       </div>
     </div>
   );
@@ -63,16 +65,8 @@ class ClientSelection extends Component {
     if (this.props.selectedClientNumber) {
       return (
         <div>
-          <span className="label label-success" id="selected-client-number">
-            Listening on {this.props.selectedClientNumber}
-          </span>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.resetClientNumber}
-          >
-            Reset
-          </button>
+          <Label bsStyle="success" id="selected-client-number">Listening on {this.props.selectedClientNumber}</Label>
+          <Button bsStyle="primary" onClick={this.resetClientNumber}>Reset</Button>
         </div>
       );
     }
@@ -86,7 +80,7 @@ class ClientSelection extends Component {
           value={this.state.value}
           onChange={this.handleChange}
         />
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <Button type="submit" bsStyle="primary">Submit</Button>
       </form>
     );
   }
