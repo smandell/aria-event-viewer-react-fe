@@ -1,46 +1,62 @@
 import React, { Component } from "react";
-import Button from 'react-bootstrap/lib/Button';
-import Label from 'react-bootstrap/lib/Label';
+import Button from "react-bootstrap/lib/Button";
+import Label from "react-bootstrap/lib/Label";
 
-var Event = (props) => {
+var EventList = props => {
   return (
     <div>
-      {props.events.map(event => {
+      {props.events.map(eventInstance => {
         return (
-          <div key={event.id} className="col-sm-12 event-box">
-            <div className="col-sm-1">
-              <EventTime datetime={event.datetime} />
-            </div>
-            <div className="col-sm-1">
-              <EventType type={event.type} />
-            </div>
-            <div className="col-sm-8">
-              <EventSummary data={event.data} />
-            </div>
-            <div className="col-sm-2">
-              <EventPayload 
-                rawPayloadData={event.rawPayloadData} 
-                displayRawPayload={props.displayRawPayload} />
-            </div>
-          </div>
+          <Event
+            event={eventInstance}
+            displayRawPayload={props.displayRawPayload}
+          />
         );
       })}
     </div>
   );
-}
+};
 
-var EventTime = (props) => {
+const Event = ({ event, displayRawPayload }) => {
   return (
-    <div className="timestamp">
-      <div>
-        <p className="text-center">{props.datetime} </p>
+    <div className="row">
+      <div key={event.id} className="col-sm-12 event-box">
+        <div className="col-sm-1">
+          <EventTime dateTime={event.dateTime} />
+        </div>
+        <div className="col-sm-1">
+          <EventType type={event.type} />
+        </div>
+        <div className="col-sm-8">
+          <EventSummary
+            data={event.data}
+            type={event.type}
+            eventTitles={event.eventTitles}
+          />
+        </div>
+        <div className="col-sm-2">
+          <EventPayload
+            rawPayloadData={event.rawPayloadData}
+            displayRawPayload={displayRawPayload}
+          />
+        </div>
       </div>
     </div>
   );
-}
+};
+
+const EventTime = props => {
+  return (
+    <div className="timestamp">
+      <div>
+        <p className="text-center">{props.dateTime} </p>
+      </div>
+    </div>
+  );
+};
 
 //Generates eventTypeData object used to create event UI
-var determineEventType = (eventType) => {
+const determineEventType = eventType => {
   let eventTypeData = {
     class: "type-icon", //background color
     title: "", //tooltip text
@@ -76,9 +92,9 @@ var determineEventType = (eventType) => {
   }
 
   return eventTypeData;
-}
+};
 
-var EventType = (props) => {
+var EventType = props => {
   const eventTypeData = determineEventType(props.type);
 
   return (
@@ -90,12 +106,12 @@ var EventType = (props) => {
       <i className="material-icons">{eventTypeData.icon}</i>
     </div>
   );
-}
+};
 
-var EventSummary = (props) => {
+var EventSummary = props => {
   let eventSummaryElement = null;
 
-  switch (props.data.type) {
+  switch (props.type) {
     case "instance":
       eventSummaryElement = <InstanceEventSummary data={props.data} />;
       break;
@@ -116,10 +132,10 @@ var EventSummary = (props) => {
   return (
     <div>
       <ul className="event-title-list">
-        {props.data.eventTitles.map(eventTitle => {
+        {props.eventTitles.map(eventTitle => {
           return (
             <li key={eventTitle.event_no}>
-              {eventTitle.event_no} - {eventTitle.event_name}{" "}
+              {eventTitle.event_num} - {eventTitle.event_name}{" "}
             </li>
           );
         })}
@@ -127,41 +143,45 @@ var EventSummary = (props) => {
       {eventSummaryElement}
     </div>
   );
-}
+};
 
-var InstanceEventSummary = (props) => {
+var InstanceEventSummary = props => {
   return (
     <div className="event-summary">
       <div className="col-sm-2">
-        <Label bsStyle="danger">Acct: {props.data.acct_no}</Label>
+        <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
       </div>
       <div className="col-sm-10">
-        {props.data.plandata.map(plan => {
+        {props.data.planData.map(plan => {
           return (
-            <Label bsStyle="primary">Master Plan: {plan.plan_instance_title}</Label>
+            <Label bsStyle="primary">
+              {plan.plan_instance_num} - {plan.plan_instance_name}
+            </Label>
           );
         })}
       </div>
     </div>
   );
-}
+};
 
-//displays the 'View Payload' button and contents 
+//displays the 'View Payload' button and contents
 class EventPayload extends Component {
   constructor(props) {
     super(props);
     this.displayRawPayload = this.displayRawPayload.bind(this);
   }
 
-  displayRawPayload(event){
+  displayRawPayload(event) {
     this.props.displayRawPayload(this.props.rawPayloadData);
   }
 
   render() {
-    return(
-      <Button bsStyle="info" onClick={this.displayRawPayload}>View Payload</Button>
+    return (
+      <Button bsStyle="info" onClick={this.displayRawPayload}>
+        View Payload
+      </Button>
     );
   }
 }
 
-export default Event;
+export default EventList;
