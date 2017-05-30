@@ -55,45 +55,52 @@ const EventTime = props => {
   );
 };
 
-//Generates eventTypeData object used to create event UI
+/**
+ * Creates the styling for the Event Type section of the Event Box
+ * @param {string} eventType - The type of event {instance, order, financial, notification, product, or unknown}
+ */
 const determineEventType = eventType => {
-  let eventTypeData = {
-    class: "type-icon", //background color
-    title: "", //tooltip text
-    icon: "" //material design icon
-  };
+  const eventTypeData = {};
 
   switch (eventType) {
     case "instance":
-      eventTypeData.class = `${eventTypeData.class} bg-primary`;
+      eventTypeData.class = "type-icon bg-primary";
       eventTypeData.title = "Accounts and Master Plan Instances";
       eventTypeData.icon = "account_circle";
       break;
     case "order":
-      eventTypeData.class = `${eventTypeData.class} bg-info`;
+      eventTypeData.class = "type-icon bg-info";
       eventTypeData.title = "Orders";
       eventTypeData.icon = "shopping_cart";
       break;
     case "financial":
-      eventTypeData.class = `${eventTypeData.class} bg-primary`;
-      eventTypeData.title = "Accounts and Master Plan Instances";
-      eventTypeData.icon = "account_circle";
+      eventTypeData.class = "type-icon bg-success";
+      eventTypeData.title = "Financial";
+      eventTypeData.icon = "euro_symbol";
       break;
     case "notification":
-      eventTypeData.class = `${eventTypeData.class} bg-primary`;
+      eventTypeData.class = "type-icon bg-primary";
       eventTypeData.title = "Accounts and Master Plan Instances";
       eventTypeData.icon = "account_circle";
       break;
     case "product":
-      eventTypeData.class = `${eventTypeData.class} bg-primary`;
+      eventTypeData.class = "type-icon bg-primary";
       eventTypeData.title = "Accounts and Master Plan Instances";
       eventTypeData.icon = "account_circle";
       break;
+    default: //[todo: come up with an icon and color for unknown events]
+      eventTypeData.class = "type-icon bg-primary";
+      eventTypeData.title = "Unknown Event";
+      eventTypeData.icon = "account_circle";            
   }
 
   return eventTypeData;
 };
 
+/**
+ * Displays the Event Type section of the Event Box 
+ * @param {Object} props 
+ */
 var EventType = props => {
   const eventTypeData = determineEventType(props.type);
 
@@ -115,18 +122,20 @@ var EventSummary = props => {
     case "instance":
       eventSummaryElement = <InstanceEventSummary data={props.data} />;
       break;
-    // case "order":
-    //   eventSummaryElement = <OrderEventSummary data={this.props.data} />
-    //   break;
-    // case "financial":
-    //   eventSummaryElement = <FinancialEventSummary data={this.props.data} />
-    //   break;
-    // case "notification":
-    //   eventSummaryElement = <NotificationEventSummary data={this.props.data} />
-    //   break;
-    // case "product":
-    //   eventSummaryElement = <ProductEventSummary data={this.props.data} />
-    //   break;
+    case "order":
+      eventSummaryElement = <OrderEventSummary data={props.data} />
+      break;
+    case "financial":
+      eventSummaryElement = <FinancialEventSummary data={props.data} />
+      break;
+    case "notification":
+      eventSummaryElement = <NotificationEventSummary data={this.props.data} />
+      break;
+    case "product":
+      eventSummaryElement = <ProductEventSummary data={this.props.data} />
+      break;
+    default:
+      eventSummaryElement = <UnknownEventSummary data={this.props.data} />
   }
 
   return (
@@ -145,7 +154,7 @@ var EventSummary = props => {
   );
 };
 
-var InstanceEventSummary = props => {
+const InstanceEventSummary = props => {
   return (
     <div className="event-summary">
       <div className="col-sm-2">
@@ -163,6 +172,47 @@ var InstanceEventSummary = props => {
     </div>
   );
 };
+
+const OrderEventSummary = props => {
+  return (
+    <div className="event-summary">
+    </div>
+  );
+}
+
+const FinancialEventSummary = props => {
+  return (
+    <div className="event-summary">
+      <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
+      {props.data.totalInvoiceAmount && 
+      <Label bsStyle="success">Total Invoice Amount: {props.data.totalInvoiceAmount}</Label>}
+    </div>
+  );  
+}
+
+const NotificationEventSummary = props => {
+  return (
+    <div className="event-summary">
+      <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
+      <Label bsStyle="primary">Message Subject: {props.data.messageSubject}</Label>
+      <Label bsStyle="primary">Message Recipient: {props.data.messageRecepient}</Label>
+    </div>
+  );
+}
+
+const ProductEventSummary = props => {
+  return (
+    <div className="event-summary">
+    </div>
+  );
+}
+
+const UnknownEventSummary = props => {
+  return (
+    <div className="event-summary">
+    </div>
+  );
+}
 
 //displays the 'View Payload' button and contents
 class EventPayload extends Component {

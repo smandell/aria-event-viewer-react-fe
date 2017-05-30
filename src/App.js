@@ -12,6 +12,7 @@ import {
   NotificationEventData,
   ProductEventData
 } from "./EventData";
+import extractPayload from './PayloadConverter';
 
 class App extends Component {
   constructor(props) {
@@ -99,7 +100,7 @@ class App extends Component {
   setClientNumber(clientNumber) {
     const socket = io.connect("https://stormy-bastion-74675.herokuapp.com/");
     socket.on("eventPayload", data => {
-      const event = this.extractPayload(data);
+      const event = extractPayload(data);
       this.setState({
         eventList: this.state.eventList.concat(event)
       });
@@ -126,54 +127,6 @@ class App extends Component {
     this.state.socket.emit("unregister", this.state.selectedClientNumber);
   }
 
-  /**
-   * Extracts the event payload data and transforms it inot the new EventData types. 
-   * Note - eventually this will go away when the server has been re-written with the same data types
-   * @param {Object} data - The socket payload containing event data 
-   */
-  extractPayload(data) {
-    var eventData = {};
-
-    eventData.clientNum = data.client_no;
-    eventData.dateTime = data.eventTime;
-    eventData.rawPayloadData = data.rawBody;
-
-    /**
-       * get event titles. Note that these come in as a string in the form of:
-       * [event number] [event name]
-       * this method splits up that string so that each can be stored in its own variable 
-       */
-    eventData.eventTitles = data.event.map(eventTitle => {
-      const eventTitleSplit = eventTitle.split(" ");
-      const event = {
-        event_num: eventTitleSplit.shift(),
-        event_name: eventTitleSplit.join(' ')
-      };
-      return event;
-    });
-
-      if (data.eventType.instance){
-        eventData.type = "instance";
-        eventData.data = {};
-        eventData.data.transactionId = data.transaction_id;
-        eventData.data.accountNum = data.acct_no;
-
-        if (data.planData) {
-          eventData.data.planData = data.planData.map(planTitle => {
-            const planTitleSplit = planTitle.split(" ");
-            const plan = {
-              plan_instance_num: planTitleSplit.shift(),
-              plan_instance_name: planTitleSplit.join(' ')
-            };
-            return plan;
-          });
-        }
-      }
-
-
-    return eventData;
-  }
-
   //display modal dialog with raw event xml payload
   displayRawPayload(rawPayload) {
     this.setState({
@@ -195,6 +148,7 @@ class App extends Component {
   }
 
   render() {
+    {/* required by React to be able to insert the raw html for the XML event payload */}
     const preBlock = { __html: "<pre>" + this.state.modal.rawPayloadData + "</pre>" };
 
     return (
