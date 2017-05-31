@@ -23,11 +23,10 @@ class App extends Component {
     this.displayRawPayload = this.displayRawPayload.bind(this);
     this.state = {
       selectedClientNumber: "",
-      eventList: [],
-        /*
+      eventList: [
         {
           id: "1235",
-          datetime: "12/2/2017",
+          dateTime: "12/2/2017",
           type: "instance",
           eventTitles: [
             {
@@ -40,8 +39,8 @@ class App extends Component {
             }
           ],
           data: {
-            acct_no: "123456",
-            plandata: [
+            accountNum: "123456",
+            planData: [
               {
                 plan_instance_num: "203052",
                 plan_instance_name: "STARLINK Safety"
@@ -56,7 +55,7 @@ class App extends Component {
         },
         {
           id: "12356",
-          datetime: "12/2/2017",
+          dateTime: "12/2/2017",
           type: "order",
           eventTitles: [
             {
@@ -85,7 +84,7 @@ class App extends Component {
           },
           rawPayloadData: "order"
         }             
-      ],*/
+      ],
       modal: {
         show: false,
         rawPayloadData: ""

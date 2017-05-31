@@ -1,0 +1,12 @@
+.event-box {
+    padding: 0px;
+    display: flex;
+}
+
+.type-icon {
+    height: 100%;
+}
+
+.event-summary {
+    padding-bottom: 5px;
+}

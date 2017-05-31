@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import Label from "react-bootstrap/lib/Label";
+import "./EventList.css";
 
 var EventList = props => {
   return (
@@ -55,6 +57,10 @@ const EventTime = props => {
   );
 };
 
+EventTime.propTypes = {
+  dateTime: PropTypes.string.isRequired
+};
+
 /**
  * Creates the styling for the Event Type section of the Event Box
  * @param {string} eventType - The type of event {instance, order, financial, notification, product, or unknown}
@@ -88,10 +94,11 @@ const determineEventType = eventType => {
       eventTypeData.title = "Accounts and Master Plan Instances";
       eventTypeData.icon = "account_circle";
       break;
-    default: //[todo: come up with an icon and color for unknown events]
+    default:
+      //[todo: come up with an icon and color for unknown events]
       eventTypeData.class = "type-icon bg-primary";
       eventTypeData.title = "Unknown Event";
-      eventTypeData.icon = "account_circle";            
+      eventTypeData.icon = "account_circle";
   }
 
   return eventTypeData;
@@ -101,8 +108,8 @@ const determineEventType = eventType => {
  * Displays the Event Type section of the Event Box 
  * @param {Object} props 
  */
-var EventType = props => {
-  const eventTypeData = determineEventType(props.type);
+const EventType = ({ type }) => {
+  const eventTypeData = determineEventType(type);
 
   return (
     <div
@@ -115,6 +122,10 @@ var EventType = props => {
   );
 };
 
+EventType.propTypes = {
+  type: PropTypes.string.isRequired
+};
+
 var EventSummary = props => {
   let eventSummaryElement = null;
 
@@ -123,19 +134,19 @@ var EventSummary = props => {
       eventSummaryElement = <InstanceEventSummary data={props.data} />;
       break;
     case "order":
-      eventSummaryElement = <OrderEventSummary data={props.data} />
+      eventSummaryElement = <OrderEventSummary data={props.data} />;
       break;
     case "financial":
-      eventSummaryElement = <FinancialEventSummary data={props.data} />
+      eventSummaryElement = <FinancialEventSummary data={props.data} />;
       break;
     case "notification":
-      eventSummaryElement = <NotificationEventSummary data={this.props.data} />
+      eventSummaryElement = <NotificationEventSummary data={this.props.data} />;
       break;
     case "product":
-      eventSummaryElement = <ProductEventSummary data={this.props.data} />
+      eventSummaryElement = <ProductEventSummary data={this.props.data} />;
       break;
     default:
-      eventSummaryElement = <UnknownEventSummary data={this.props.data} />
+      eventSummaryElement = <UnknownEventSummary data={this.props.data} />;
   }
 
   return (
@@ -154,16 +165,22 @@ var EventSummary = props => {
   );
 };
 
+EventSummary.propTypes = {
+  type: PropTypes.string.isRequired,
+  eventTitles: PropTypes.array.isRequired,
+  data: PropTypes.object
+};
+
 const InstanceEventSummary = props => {
   return (
-    <div className="event-summary">
+    <div className="event-summary row">
       <div className="col-sm-2">
         <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
       </div>
       <div className="col-sm-10">
         {props.data.planData.map(plan => {
           return (
-            <Label bsStyle="primary">
+            <Label bsStyle="primary" key={plan.plan_instance_num}>
               {plan.plan_instance_num} - {plan.plan_instance_name}
             </Label>
           );
@@ -173,46 +190,81 @@ const InstanceEventSummary = props => {
   );
 };
 
-const OrderEventSummary = props => {
-  return (
-    <div className="event-summary">
-    </div>
-  );
-}
+InstanceEventSummary.propTypes = {
+  data: PropTypes.shape({
+    accountNum: PropTypes.string.isRequired,
+    planData: PropTypes.shape({
+      plan_instance_num: PropTypes.number,
+      plan_instance_name: PropTypes.string
+    })
+  })
+};
 
+const OrderEventSummary = props => {
+  return <div className="event-summary" />;
+};
+
+/**
+ * Captures the Financial Event Class summary display 
+ * @param {Object} props 
+ */
 const FinancialEventSummary = props => {
   return (
     <div className="event-summary">
       <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
-      {props.data.totalInvoiceAmount && 
-      <Label bsStyle="success">Total Invoice Amount: {props.data.totalInvoiceAmount}</Label>}
+      {props.data.totalInvoiceAmount &&
+        <Label bsStyle="success">
+          Total Invoice Amount: {props.data.totalInvoiceAmount}
+        </Label>}
     </div>
-  );  
-}
+  );
+};
 
+FinancialEventSummary.propTypes = {
+  data: PropTypes.shape({
+    accountNum: PropTypes.number.isRequired,
+    totalInvoiceAmount: PropTypes.number
+  })
+};
+
+/**
+ * Captures the Notification Event Class summary display 
+ * @param {Object} props 
+ */
 const NotificationEventSummary = props => {
   return (
     <div className="event-summary">
       <Label bsStyle="danger">Acct: {props.data.accountNum}</Label>
-      <Label bsStyle="primary">Message Subject: {props.data.messageSubject}</Label>
-      <Label bsStyle="primary">Message Recipient: {props.data.messageRecepient}</Label>
+      <Label bsStyle="primary">
+        Message Subject: {props.data.messageSubject}
+      </Label>
+      <Label bsStyle="primary">
+        Message Recipient: {props.data.messageRecepient}
+      </Label>
     </div>
   );
-}
+};
+
+NotificationEventSummary.propTypes = {
+  data: PropTypes.shape({
+    accountNum: PropTypes.number.isRequired,
+    messageSubject: PropTypes.string.isRequired,
+    messageRecepient: PropTypes.string.isRequired
+  })
+};
 
 const ProductEventSummary = props => {
-  return (
-    <div className="event-summary">
-    </div>
-  );
-}
+  return <div className="event-summary" />;
+};
 
+/**
+ * This is a generic event summary field that will simply display the contents of the data object in string format. 
+ * It is included in case Aria adds any more classes of events later down the line. 
+ * @param {Object} props 
+ */
 const UnknownEventSummary = props => {
-  return (
-    <div className="event-summary">
-    </div>
-  );
-}
+  return <div className="event-summary" />;
+};
 
 //displays the 'View Payload' button and contents
 class EventPayload extends Component {
@@ -233,5 +285,10 @@ class EventPayload extends Component {
     );
   }
 }
+
+EventPayload.propTypes = {
+  displayRawPayload: PropTypes.func.isRequired,
+  rawPyaloadData: PropTypes.string.isRequred
+};
 
 export default EventList;
