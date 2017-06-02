@@ -12,7 +12,7 @@ import {
   NotificationEventData,
   ProductEventData
 } from "./EventData";
-import extractPayload from './PayloadConverter';
+import extractPayload from "./PayloadConverter";
 
 class App extends Component {
   constructor(props) {
@@ -83,7 +83,7 @@ class App extends Component {
             ]
           },
           rawPayloadData: "order"
-        }             
+        }
       ],
       modal: {
         show: false,
@@ -147,8 +147,12 @@ class App extends Component {
   }
 
   render() {
-    {/* required by React to be able to insert the raw html for the XML event payload */}
-    const preBlock = { __html: "<pre>" + this.state.modal.rawPayloadData + "</pre>" };
+    {
+      /* required by React to be able to insert the raw html for the XML event payload */
+    }
+    const preBlock = {
+      __html: "<pre>" + this.state.modal.rawPayloadData + "</pre>"
+    };
 
     return (
       <div className="App containter-fluid">
@@ -157,21 +161,25 @@ class App extends Component {
             <Modal.Title>Raw Event Payload</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div dangerouslySetInnerHTML={ preBlock } />
+            <div dangerouslySetInnerHTML={preBlock} />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>Close</Button>
           </Modal.Footer>
         </Modal>
-        <Header
-          selectedClientNumber={this.state.selectedClientNumber}
-          setClientNumber={this.setClientNumber}
-          resetClientNumber={this.resetClientNumber}
-        />
-        <EventList
-          events={this.state.eventList}
-          displayRawPayload={this.displayRawPayload}
-        />
+        <div className="row">
+          <Header
+            selectedClientNumber={this.state.selectedClientNumber}
+            setClientNumber={this.setClientNumber}
+            resetClientNumber={this.resetClientNumber}
+          />
+        </div>
+        <div className="row">
+          <EventList
+            events={this.state.eventList}
+            displayRawPayload={this.displayRawPayload}
+          />
+        </div>
       </div>
     );
   }
