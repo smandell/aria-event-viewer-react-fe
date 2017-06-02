@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Button from 'react-bootstrap/lib/Button';
-import Label from 'react-bootstrap/lib/Label';
+import Button from "react-bootstrap/lib/Button";
+import Label from "react-bootstrap/lib/Label";
 
 var Header = props => {
   return (
@@ -65,24 +65,29 @@ class ClientSelection extends Component {
     if (this.props.selectedClientNumber) {
       return (
         <div>
-          <Label bsStyle="success" id="selected-client-number">Listening on {this.props.selectedClientNumber}</Label>
-          <Button bsStyle="primary" onClick={this.resetClientNumber}>Reset</Button>
+          <Label bsStyle="success" id="selected-client-number">
+            Listening on {this.props.selectedClientNumber}
+          </Label>
+          <Button bsStyle="primary" onClick={this.resetClientNumber}>
+            Reset
+          </Button>
         </div>
       );
+    } else {
+      return (
+        <form className="form-inline" onSubmit={this.selectClientNumber}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter a client id"
+            id="client-number-input"
+            value={this.state.value}
+            onChange={this.handleChange}
+          />
+          <Button type="submit" bsStyle="primary">Submit</Button>
+        </form>
+      );
     }
-    return (
-      <form className="form-inline" onSubmit={this.selectClientNumber}>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Enter a client id"
-          id="client-number-input"
-          value={this.state.value}
-          onChange={this.handleChange}
-        />
-        <Button type="submit" bsStyle="primary">Submit</Button>
-      </form>
-    );
   }
 }
 

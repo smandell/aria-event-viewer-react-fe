@@ -1,10 +1,18 @@
-import React, { Component } from 'react';
-import './App.css';
-import Header from './Header';
-import Event from './Event';
-import io from 'socket.io-client';
-import Modal from 'react-bootstrap/lib/Modal';
-import Button from 'react-bootstrap/lib/Button';
+import React, { Component } from "react";
+import "./App.css";
+import Header from "./Header";
+import EventList from "./EventList";
+import io from "socket.io-client";
+import Modal from "react-bootstrap/lib/Modal";
+import Button from "react-bootstrap/lib/Button";
+import {
+  InstanceEventData,
+  OrderEventData,
+  FinancialEventData,
+  NotificationEventData,
+  ProductEventData
+} from "./EventData";
+import extractPayload from "./PayloadConverter";
 
 class App extends Component {
   constructor(props) {
@@ -14,125 +22,137 @@ class App extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.displayRawPayload = this.displayRawPayload.bind(this);
     this.state = {
-      selectedClientNumber: '',
+      selectedClientNumber: "",
       eventList: [
         {
           id: "1235",
-          datetime: "12/2/2017",
+          dateTime: "12/2/2017",
           type: "instance",
+          eventTitles: [
+            {
+              event_num: "724",
+              event_name: "Master Plan Instance Assigned"
+            },
+            {
+              event_num: "726",
+              event_name: "Master Plan Instance Made Up Event"
+            }
+          ],
           data: {
-            type: 'instance',
-            eventTitles: [
+            accountNum: "123456",
+            planData: [
               {
-                event_no: '724',
-                event_name: 'Master Plan Instance Assigned'
+                plan_instance_num: "203052",
+                plan_instance_name: "STARLINK Safety"
               },
               {
-                event_no: '726',
-                event_name: 'Master Plan Instance Made Up Event'
-              }          
-            ],
-            acct_no: '123456',
-            plandata: [
-              {
-                plan_instance_title: "203052 - STARLINK Safety"
-              },
-              {
-                plan_instance_title: "234522 - STARLINK Remote Services"
-              }          
+                plan_instance_num: "234522",
+                plan_instance_name: "STARLINK Remote Services"
+              }
             ]
           },
           rawPayloadData: "hello"
         },
         {
           id: "12356",
-          datetime: "12/2/2017",
-          type: "instance",
+          dateTime: "12/2/2017",
+          type: "order",
+          eventTitles: [
+            {
+              event_num: "804",
+              event_name: "Order Paid"
+            }
+          ],
           data: {
-            type: 'instance',
-            eventTitles: [
+            account_num: 111111,
+            user_id: "bob_smith",
+            order_num: 12345,
+            order_status: "good", //todo: figure out valid values for this
+            plan_instance_num: 123456,
+            orderData: [
               {
-                event_no: '724',
-                event_name: 'Master Plan Instance Assigned 2'
+                sku: "12345abc",
+                units: 1234,
+                unit_rate: "123.23"
               },
               {
-                event_no: '726',
-                event_name: 'Master Plan Instance Made Up Event 2'
-              }          
-            ],
-            acct_no: '123456',
-            plandata: [
-              {
-                plan_instance_title: "203052 - STARLINK Safety"
-              },
-              {
-                plan_instance_title: "234522 - STARLINK Remote Services"
-              }          
+                sku: "abc12345",
+                units: 12,
+                unit_rate: "555.55"
+              }
             ]
           },
-          rawPayloadData: "goodbye"
-        }    
+          rawPayloadData: "order"
+        }
       ],
       modal: {
         show: false,
-        rawPayloadData: ''
+        rawPayloadData: ""
       }
-    }
+    };
   }
 
-  setClientNumber(clientNumber){
-
-    const socket = io.connect('https://stormy-bastion-74675.herokuapp.com/');
-    socket.on('eventPayload', (data) => {
-      const event = this.extractPayload(data);
+  /**
+   * 
+   * @param {int} clientNumber - The client number the user has selected
+   */
+  setClientNumber(clientNumber) {
+    const socket = io.connect("https://stormy-bastion-74675.herokuapp.com/");
+    socket.on("eventPayload", data => {
+      const event = extractPayload(data);
       this.setState({
         eventList: this.state.eventList.concat(event)
       });
       console.log(data);
     });
 
-    socket.emit('register', clientNumber);
+    socket.emit("register", clientNumber);
 
-    this.setState( { 
+    this.setState({
       selectedClientNumber: clientNumber,
-      socket: socket 
-    } );
-    
+      socket: socket
+    });
   }
 
-  resetClientNumber(){
-    this.setState( {
-      selectedClientNumber: '',
+  /**
+   * Clears the client number from state and unregisters its listener from the server 
+   */
+  resetClientNumber() {
+    this.setState({
+      selectedClientNumber: "",
       eventList: []
-    })
-  }
+    });
 
-  //pull out event details from the socket payload 
-  extractPayload(data){
-    return data; 
+    this.state.socket.emit("unregister", this.state.selectedClientNumber);
   }
 
   //display modal dialog with raw event xml payload
-  displayRawPayload(rawPayload){
+  displayRawPayload(rawPayload) {
     this.setState({
       modal: {
         show: true,
         rawPayloadData: rawPayload
       }
-    })
+    });
   }
 
-  //close the Raw Payload modal and clear its contents 
-  closeModal(){
+  //close the Raw Payload modal and clear its contents
+  closeModal() {
     this.setState({
       modal: {
         show: false,
-        rawPayloadData: ''
+        rawPayloadData: ""
       }
-    })
+    });
   }
 
   render() {
+    {
+      /* required by React to be able to insert the raw html for the XML event payload */
+    }
+    const preBlock = {
+      __html: "<pre>" + this.state.modal.rawPayloadData + "</pre>"
+    };
 
     return (
       <div className="App containter-fluid">
@@ -141,20 +161,25 @@ class App extends Component {
             <Modal.Title>Raw Event Payload</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <pre>
-              <code>
-                {this.state.modal.rawPayloadData}
-              </code>
-            </pre>
+            <div dangerouslySetInnerHTML={preBlock} />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeModal}>Close</Button>
           </Modal.Footer>
         </Modal>
-        <Header selectedClientNumber={this.state.selectedClientNumber} setClientNumber={this.setClientNumber} resetClientNumber={this.resetClientNumber}/>
-        <Event 
-          events={this.state.eventList} 
-          displayRawPayload={this.displayRawPayload} />
+        <div className="row">
+          <Header
+            selectedClientNumber={this.state.selectedClientNumber}
+            setClientNumber={this.setClientNumber}
+            resetClientNumber={this.resetClientNumber}
+          />
+        </div>
+        <div className="row">
+          <EventList
+            events={this.state.eventList}
+            displayRawPayload={this.displayRawPayload}
+          />
+        </div>
       </div>
     );
   }
