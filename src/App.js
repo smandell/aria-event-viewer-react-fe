@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
+import "./Styles/App.css";
 import Header from "./Header";
 import EventList from "./EventList";
 import io from "socket.io-client";
