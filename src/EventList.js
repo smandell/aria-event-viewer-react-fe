@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Button from "react-bootstrap/lib/Button";
 import Label from "react-bootstrap/lib/Label";
-import "./EventList.css";
+import "./Styles/EventList.css";
 import EventSummary from "./EventSummary";
 
 var EventList = props => {
